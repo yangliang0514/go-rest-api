@@ -5,13 +5,8 @@ import (
 )
 
 func main() {
-	router := gin.Default()
-
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Hello, World!",
-		})
-	})
-
-	router.Run(":8080")
+	server := gin.Default()
+	RegisterRoutes(server)
+	InitDB()
+	server.Run(":8080")
 }
