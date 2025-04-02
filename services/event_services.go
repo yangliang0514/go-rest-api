@@ -7,7 +7,7 @@ import (
 
 func GetEvents() ([]models.Event, error) {
 	var events []models.Event
-	result := database.GetDB().Find(&events)
+	result := database.DB.Find(&events)
 
 	if result.Error != nil {
 		return []models.Event{}, result.Error
@@ -18,7 +18,7 @@ func GetEvents() ([]models.Event, error) {
 
 func GetEventById(id string) (models.Event, error) {
 	var event models.Event
-	result := database.GetDB().First(&event, "id = ?", id)
+	result := database.DB.First(&event, "id = ?", id)
 
 	if result.Error != nil {
 		return models.Event{}, result.Error
@@ -28,7 +28,7 @@ func GetEventById(id string) (models.Event, error) {
 }
 
 func CreateEvent(event models.Event) (models.Event, error) {
-	if result := database.GetDB().Create(&event); result.Error != nil {
+	if result := database.DB.Create(&event); result.Error != nil {
 		return models.Event{}, result.Error
 	}
 
@@ -42,7 +42,7 @@ func UpdateEvent(id string, eventUpdates models.Event) (models.Event, error) {
 		return models.Event{}, err
 	}
 
-	if result := database.GetDB().Model(&event).Updates(eventUpdates); result.Error != nil {
+	if result := database.DB.Model(&event).Updates(eventUpdates); result.Error != nil {
 		return models.Event{}, result.Error
 	}
 
@@ -50,7 +50,7 @@ func UpdateEvent(id string, eventUpdates models.Event) (models.Event, error) {
 }
 
 func DeleteEvent(id string) error {
-	if result := database.GetDB().Delete(&models.Event{}, id); result.Error != nil {
+	if result := database.DB.Delete(&models.Event{}, id); result.Error != nil {
 		return result.Error
 	}
 	return nil

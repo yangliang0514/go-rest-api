@@ -6,8 +6,12 @@ import (
 )
 
 func main() {
+	gin.DisableConsoleColor() // Disable Gin's default colored output
+
 	server := gin.Default()
+
 	RegisterRoutes(server)
 	database.InitDB()
+
 	server.Run(":8080")
 }

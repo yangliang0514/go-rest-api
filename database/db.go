@@ -15,14 +15,8 @@ func InitDB() *gorm.DB {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&models.Event{})
+	DB = db
+	DB.AutoMigrate(&models.Event{})
 
-	return GetDB(db)
-}
-
-func GetDB(db ...*gorm.DB) *gorm.DB {
-	if len(db) > 0 && db[0] != nil {
-		DB = db[0]
-	}
 	return DB
 }
