@@ -3,10 +3,10 @@ package models
 import "time"
 
 type Event struct {
-	Id          string    `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Location    string    `json:"location"`
-	DateTime    time.Time `json:"date_time"`
-	UserId      string    `json:"user_id"`
+	Id          string    `json:"id" gorm:"primaryKey"`
+	Name        string    `json:"name" binding:"required"`
+	Description string    `json:"description" binding:"required"`
+	Location    string    `json:"location" binding:"required"`
+	DateTime    time.Time `json:"date_time" binding:"required"`
+	UserId      string    `json:"user_id" binding:"required"`
 }

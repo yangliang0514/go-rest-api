@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"github.com/yangliang0514/go-rest-api/models"
@@ -8,8 +8,8 @@ import (
 
 var DB *gorm.DB
 
-func InitDB() {
-	db, err := gorm.Open(sqlite.Open("app.db"), &gorm.Config{})
+func InitDB() *gorm.DB {
+	db, err := gorm.Open(sqlite.Open("database/app.db"), &gorm.Config{})
 
 	if err != nil {
 		panic("failed to connect database")
@@ -17,9 +17,12 @@ func InitDB() {
 
 	db.AutoMigrate(&models.Event{})
 
-	DB = db
+	return GetDB(db)
 }
 
-func GetDB() *gorm.DB {
+func GetDB(db ...*gorm.DB) *gorm.DB {
+	if len(db) > 0 && db[0] != nil {
+		DB = db[0]
+	}
 	return DB
 }
