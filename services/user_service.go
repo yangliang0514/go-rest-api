@@ -11,3 +11,11 @@ func CreateUser(user models.User) (models.User, error) {
 	}
 	return user, nil
 }
+
+func GetUserByEmail(email string) (models.User, error) {
+	var user models.User
+	if result := database.DB.Where("email = ?", email).First(&user); result.Error != nil {
+		return models.User{}, result.Error
+	}
+	return user, nil
+}
