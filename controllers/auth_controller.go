@@ -7,13 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/yangliang0514/go-rest-api/middlewares"
 	"github.com/yangliang0514/go-rest-api/models"
 	"github.com/yangliang0514/go-rest-api/services"
 	"golang.org/x/crypto/bcrypt"
 )
-
-// hardcoded jwt key for simplicity
-const jwtKey = "ce78504d2113ccc2378ac0e6754c6f8b8f757e16fbdc22c79a1700a3706742ce"
 
 func Signup(c *gin.Context) {
 	var user models.User
@@ -65,11 +63,11 @@ func Login(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":  user.Id,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"userId": user.Id,
+		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 	})
 
-	tokenString, err := token.SignedString([]byte(jwtKey))
+	tokenString, err := token.SignedString([]byte(middlewares.JWT_SECRET))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

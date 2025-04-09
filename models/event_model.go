@@ -9,5 +9,5 @@ type Event struct {
 	Location    string    `json:"location" binding:"required"`
 	DateTime    time.Time `json:"date_time" binding:"required"`
 	UserId      string    `json:"user_id" gorm:"index"`
-	User        User      `json:"user" gorm:"foreignKey:UserId;references:Id"`
+	User        *User     `json:"-" gorm:"foreignKey:UserId;references:Id"`
 }
