@@ -8,6 +8,5 @@ type Event struct {
 	Description string    `json:"description" binding:"required"`
 	Location    string    `json:"location" binding:"required"`
 	DateTime    time.Time `json:"date_time" binding:"required"`
-	UserId      string    `json:"user_id" gorm:"index"`
-	User        *User     `json:"-" gorm:"foreignKey:UserId;references:Id"`
+	Users       []*User   `gorm:"many2many:user_events"`
 }
