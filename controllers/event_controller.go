@@ -109,3 +109,15 @@ func UnregisterUserFromEvent(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "User unregistered from event successfully"})
 }
+
+func ListRegisteredEvents(c *gin.Context) {
+	userId := c.MustGet("userId").(string)
+
+	user, err := services.GetUserByIdWithPreloads(userId)
+
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"events": user.Events})
+}
