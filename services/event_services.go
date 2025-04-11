@@ -52,7 +52,7 @@ func UpdateEvent(id string, eventUpdates models.Event) (models.Event, error) {
 }
 
 func DeleteEvent(id string) error {
-	if result := database.DB.Delete(&models.Event{}, id); result.Error != nil {
+	if result := database.DB.Delete(&models.Event{}, "id = ?", id); result.Error != nil {
 		return result.Error
 	}
 	return nil
