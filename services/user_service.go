@@ -19,3 +19,11 @@ func GetUserByEmail(email string) (models.User, error) {
 	}
 	return user, nil
 }
+
+func GetUserById(id string) (models.User, error) {
+	var user models.User
+	if result := database.DB.Where("id = ?", id).First(&user); result.Error != nil {
+		return models.User{}, result.Error
+	}
+	return user, nil
+}

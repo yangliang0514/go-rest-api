@@ -85,3 +85,27 @@ func DeleteEvent(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Event deleted successfully"})
 }
+
+func RegisterUserToEvent(c *gin.Context) {
+	eventId := c.Param("id")
+	userId := c.MustGet("userId").(string)
+
+	if err := services.RegisterUserToEvent(eventId, userId); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User registered to event successfully"})
+}
+
+func UnregisterUserFromEvent(c *gin.Context) {
+	eventId := c.Param("id")
+	userId := c.MustGet("userId").(string)
+
+	if err := services.UnregisterUserFromEvent(eventId, userId); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User unregistered from event successfully"})
+}

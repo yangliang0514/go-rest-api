@@ -1,6 +1,8 @@
 package services
 
 import (
+	"errors"
+
 	"github.com/yangliang0514/go-rest-api/database"
 	"github.com/yangliang0514/go-rest-api/models"
 )
@@ -54,4 +56,62 @@ func DeleteEvent(id string) error {
 		return result.Error
 	}
 	return nil
+}
+
+func RegisterUserToEvent(eventId string, userId string) error {
+	event, err := GetEventById(eventId)
+
+	if err != nil {
+		return err
+	}
+
+	user, err := GetUserById(userId)
+
+	if err != nil {
+		return err
+	}
+
+	if isUserRegistered(&event, &user) {
+		return errors.New("user already registered")
+	}
+
+	if err := database.DB.Model(&event).Association("Users").Append(&user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UnregisterUserFromEvent(eventId string, userId string) error {
+	event, err := GetEventById(eventId)
+
+	if err != nil {
+		return err
+	}
+
+	user, err := GetUserById(userId)
+
+	if err != nil {
+		return err
+	}
+
+	if !isUserRegistered(&event, &user) {
+		return errors.New("user wasn't registered")
+	}
+
+	if err := database.DB.Model(&event).Association("Users").Delete(&user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func isUserRegistered(event *models.Event, user *models.User) bool {
+	var existingUsers []models.User
+
+	if err := database.DB.Model(&event).Association("Users").Find(&existingUsers, "id = ?", user.Id); err != nil {
+		return false
+	}
+
+	return len(existingUsers) > 0
 }
