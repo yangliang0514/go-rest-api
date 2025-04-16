@@ -32,7 +32,7 @@ func Signup(c *gin.Context) {
 	user.HashedPassword = string(hashedPassword)
 
 	if _, err := services.CreateUser(user); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"error": err.Error()})
+		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return
 	}
 
