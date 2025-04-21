@@ -11,7 +11,7 @@ import (
 
 func TestSignup(t *testing.T) {
 	t.Run("create user", func(t *testing.T) {
-		res := performRequest(server, "POST", "/signup", newUser())
+		res := performRequest(server, "POST", "/signup", "", newUser())
 
 		var resBody map[string]string
 		err := json.Unmarshal(res.Body.Bytes(), &resBody)
@@ -22,7 +22,7 @@ func TestSignup(t *testing.T) {
 	})
 
 	t.Run("create user with existing email", func(t *testing.T) {
-		res := performRequest(server, "POST", "/signup", newUser())
+		res := performRequest(server, "POST", "/signup", "", newUser())
 		assert.Equal(t, http.StatusConflict, res.Code)
 	})
 }
@@ -30,7 +30,7 @@ func TestSignup(t *testing.T) {
 func TestLogin(t *testing.T) {
 	t.Run("login user", func(t *testing.T) {
 		user := newUser()
-		res := performRequest(server, "POST", "/login", user)
+		res := performRequest(server, "POST", "/login", "", user)
 
 		var resBody map[string]any
 		err := json.Unmarshal(res.Body.Bytes(), &resBody)
@@ -47,7 +47,7 @@ func TestLogin(t *testing.T) {
 		user := newUser()
 		user.Password = "wrong password"
 
-		res := performRequest(server, "POST", "/login", user)
+		res := performRequest(server, "POST", "/login", "", user)
 
 		var resBody map[string]any
 		err := json.Unmarshal(res.Body.Bytes(), &resBody)
@@ -55,6 +55,21 @@ func TestLogin(t *testing.T) {
 
 		assert.Equal(t, http.StatusUnauthorized, res.Code)
 		assert.Equal(t, "Invalid credentials", resBody["error"])
+	})
+}
+
+func TestProtectedRoute(t *testing.T) {
+	user := newUser()
+	userInfo := loginUser(server, user.Email, user.Password)
+
+	t.Run("get events with valid token", func(t *testing.T) {
+		res := performRequest(server, "GET", "/events", userInfo.Token, nil)
+		assert.Equal(t, http.StatusOK, res.Code)
+	})
+
+	t.Run("get events with invalid token", func(t *testing.T) {
+		res := performRequest(server, "GET", "/events", "invalid token", nil)
+		assert.Equal(t, http.StatusUnauthorized, res.Code)
 	})
 }
 
